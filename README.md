@@ -14,7 +14,7 @@ This Airflow Directed Acyclic Graph (DAG) orchestrates a robust ETL (Extract, Tr
 
 Tasks:
 
-Extract and Transform Task: This task extracts data from the YouTube API using a provided API key and conducts initial data transformations. The youtube_statistics library is utilized for efficient data analysis.
+Extract and Transform Task: This task extracts data from the YouTube API using a provided API key and conducts initial data transformations. The youtube_statistics is utilized for efficient data analysis.
 Data Validation Task: The extracted data is subjected to rigorous validation in this task. The validation process ensures data integrity, accuracy, and adherence to predefined data types and structure.
 Export to BigQuery Task: Validated data is loaded into Google BigQuery for further processing and analysis. The task uses the google.cloud library and requires appropriate credentials for access.
 DAG Configuration:
