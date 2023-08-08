@@ -6,4 +6,4 @@ I chose the YouTube API as the foundation for my project due to its unparalleled
 ![Steps](infographic.png)
 
 # Flow chart 
-![Steps](infographic.png)
+![Steps](flow_chart.png)
