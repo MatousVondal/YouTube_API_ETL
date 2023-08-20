@@ -4,7 +4,6 @@
 
 - [Project Overview](#project-overview)
   - [Why YouTube API?](#why-youtube-api)
-- [ETL Process Flow](#etl-process-flow)
 - [Flow Chart](#flow-chart)
 - [Airflow DAG Overview](#airflow-dag-overview)
   - [1. Extract and Transform Task](#1-extract-and-transform-task)
@@ -23,9 +22,7 @@ This project showcases an ETL (Extract, Transform, Load) pipeline orchestrated u
 
 The YouTube API serves as the core of this project due to its real-time data access, spanning a wide range of content, channel metrics, comments, and more, enabling comprehensive analysis.
 
-## ETL Process Flow
-
-![ETL Process Flow](infographic.png)
+![youtube](infographic.png)
 
 ## Flow Chart
 
