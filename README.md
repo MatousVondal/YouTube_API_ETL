@@ -1,5 +1,20 @@
 # YouTube API ETL Pipeline using Airflow
 
+## Table of Contents
+
+- [Project Overview](#project-overview)
+  - [Why YouTube API?](#why-youtube-api)
+- [ETL Process Flow](#etl-process-flow)
+- [Flow Chart](#flow-chart)
+- [Airflow DAG Overview](#airflow-dag-overview)
+  - [1. Extract and Transform Task](#1-extract-and-transform-task)
+  - [2. Data Validation Task](#2-data-validation-task)
+  - [3. Export to BigQuery Task](#3-export-to-bigquery-task)
+- [DAG Configuration Highlights](#dag-configuration-highlights)
+- [Task Dependencies](#task-dependencies)
+- [Notes](#notes)
+- [Power BI Dashboard](#power-bi-dashboard)
+
 ## Project Overview
 
 This project showcases an ETL (Extract, Transform, Load) pipeline orchestrated using Apache Airflow and integrated with the YouTube API. The pipeline efficiently extracts, transforms, and loads data from the YouTube API to Google BigQuery, laying the groundwork for insightful analytics. The analytical component of the project will be facilitated using Power BI.
