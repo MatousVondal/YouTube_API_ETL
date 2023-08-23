@@ -10,7 +10,7 @@
   - [2. Data Validation Task](#2-data-validation-task)
   - [3. Export to BigQuery Task](#3-export-to-bigquery-task)
 - [DAG Configuration Highlights](#dag-configuration-highlights)
-- [Task Dependencies](#task-dependencies)
+- [Purpose of Merging and Cleaning Operation in BigQuery](#Purpose-of-Merging-and-Cleaning-Operation-in-BigQuery)
 - [Notes](#notes)
 - [Power BI Dashboard](#power-bi-dashboard)
 
