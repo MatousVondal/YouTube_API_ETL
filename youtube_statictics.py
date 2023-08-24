@@ -5,14 +5,24 @@ from collections import Counter
 import re
 import pandas as pd
 
+
 # Define a class to handle YouTube API requests and data processing
 class YTRequestProcessor:
     def __init__(self, api_key, results):
         self.api_key = api_key
         self.results = results
 
-    # Fetch video data from YouTube API
     def get_video_data(self):
+        """
+        Fetch video data from the YouTube API.
+
+        This function retrieves video data from the YouTube API based on the specified parameters.
+        It fetches information such as snippet, content details, statistics, player, topic details,
+        live streaming details, and more.
+
+        Returns:
+            list: A list of video items containing various information retrieved from the API.
+        """
         video_url = f'https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics%2Cplayer%2CtopicDetails%2CliveStreamingDetails&chart=mostPopular&maxResults={self.results}&key={self.api_key}'
         json_url = requests.get(video_url)
         data = json.loads(json_url.text)
@@ -25,41 +35,76 @@ class YTRequestProcessor:
         data_channel = json.loads(json_url_channel.text)
         return data_channel.get("items", [])[0]["statistics"]
 
+
 # Define a class to transform and process data
 class DataTransformer:
     # Convert a list of strings to datetime objects
     @staticmethod
     def string_to_date(input):
+        """
+        Convert a list of string dates to datetime objects.
+
+        Args:
+            input (list): A list of string dates in the format '%Y-%m-%dT%H:%M:%SZ'.
+
+        Returns:
+            list: A list of datetime objects corresponding to the input dates.
+        """
         results = []
         for data in input:
             datetime_obj = datetime.datetime.strptime(data, '%Y-%m-%dT%H:%M:%SZ')
             results.append(datetime_obj)
         return results
 
-    # Remove special characters from a sentence
     @staticmethod
     def remove_special_characters(sentence):
+        """
+        Remove special characters from a sentence.
+
+        Args:
+            sentence (str): The input sentence containing special characters.
+
+        Returns:
+            str: The cleaned sentence with special characters removed.
+        """
         cleaned_sentence = re.sub(r'[^a-zA-Z0-9\s]', '', sentence)
         return cleaned_sentence
 
-    # Get the most frequent word in a list of tags
     @staticmethod
     def get_most_frequent_word_in_tags(records):
+        """
+        Get the most frequent word in a list of tags.
+
+        Args:
+            records (list): A list of tag lists.
+
+        Returns:
+            list: A list of the most frequent words from the input tag lists.
+        """
         results = []
         for tags_list in records:
-            if tags_list != 'Uknown':
+            if tags_list != 'Unknown':
                 all_text = " ".join(tags_list)
                 words = re.findall(r'\b(?![0-9]+\b)\w+\b', all_text.lower())
                 word_counts = Counter(words)
                 most_common_word, count = word_counts.most_common(1)[0]
                 results.append(most_common_word)
             else:
-                results.append('Uknown')
+                results.append('Unknown')
         return results
 
-    # Calculate ratios between two sets of values, handling ZeroDivisionError
     @staticmethod
     def count_ratio(values, channel_values):
+        """
+        Calculate ratios between two sets of values, handling ZeroDivisionError.
+
+        Args:
+            values (list): List of values for the numerator.
+            channel_values (list): List of values for the denominator (channels).
+
+        Returns:
+            list: List of ratios between corresponding values. If denominator is zero, ratio is set to 0.
+        """
         result = []
         for value, channel_value in zip(values, channel_values):
             try:
@@ -69,9 +114,17 @@ class DataTransformer:
                 result.append(0)
         return result
 
-    # Categorize durations into "short", "medium", or "long"
     @staticmethod
     def categorize_duration(duration_values):
+        """
+        Categorize durations into "short", "medium", or "long".
+
+        Args:
+            duration_values (list): List of duration values in seconds.
+
+        Returns:
+            list: List of category labels ("short", "medium", or "long") based on duration values.
+        """
         short_threshold = 180  # 3 minutes (180 seconds)
         medium_threshold = 600  # 10 minutes (600 seconds)
         duration_categories = []
@@ -85,28 +138,41 @@ class DataTransformer:
             duration_categories.append(category)
         return duration_categories
 
-    # Convert string timestamps to datetime objects
     @staticmethod
     def convert_string_to_datetime(timestamp_str):
+        """
+        Convert string timestamps to datetime objects.
+
+        Args:
+            timestamp_str (list): List of string timestamps in the format "%Y-%m-%dT%H:%M:%SZ".
+
+        Returns:
+            list: List of datetime objects corresponding to the input string timestamps.
+        """
         results = []
         for times in timestamp_str:
-            # Define the format of the timestamp string
             timestamp_format = "%Y-%m-%dT%H:%M:%SZ"
-            
-            # Parse the string into a datetime object
             timestamp_dt = datetime.strptime(times, timestamp_format)
             results.append(timestamp_dt)
         return results
 
-    # Transform duration strings to total seconds
     @staticmethod
     def duration_transform(duration_list):
+        """
+        Transform duration strings to total seconds.
+
+        Args:
+            duration_list (list): List of duration strings in ISO8601 format.
+
+        Returns:
+            list: List of total seconds corresponding to the input duration strings.
+        """
         result = []
         for duration in duration_list:
             if not duration:
                 result.append(0)
                 continue
-            
+
             total_seconds = 0
 
             if 'H' in duration:
@@ -128,52 +194,67 @@ class DataTransformer:
     @staticmethod
     def get_category_name(category_id):
         categories = {
-			'1': 'Film & Animation',
-			'2': 'Autos & Vehicles',
-			'10': 'Music',
-			'15': 'Pets & Animals',
-			'17': 'Sports',
-			'18': 'Short Movies',
-			'19': 'Travel & Events',
-			'20': 'Gaming',
-			'21': 'Videoblogging',
-			'22': 'People & Blogs',
-			'23': 'Comedy',
-			'24': 'Entertainment',
-			'25': 'News & Politics',
-			'26': 'Howto & Style',
-			'27': 'Education',
-			'28': 'Science & Technology',
-			'29': 'Nonprofits & Activism',
-			'30': 'Movies',
-			'31': 'Anime/Animation',
-			'32': 'Action/Adventure',
-			'33': 'Classics',
-			'34': 'Comedy',
-			'35': 'Documentary',
-			'36': 'Drama',
-			'37': 'Family',
-			'38': 'Foreign',
-			'39': 'Horror',
-			'40': 'Sci-Fi/Fantasy',
-			'41': 'Thriller',
-			'42': 'Shorts',
-			'43': 'Shows',
-			'44': 'Trailers',
-		}
+            '1': 'Film & Animation',
+            '2': 'Autos & Vehicles',
+            '10': 'Music',
+            '15': 'Pets & Animals',
+            '17': 'Sports',
+            '18': 'Short Movies',
+            '19': 'Travel & Events',
+            '20': 'Gaming',
+            '21': 'Videoblogging',
+            '22': 'People & Blogs',
+            '23': 'Comedy',
+            '24': 'Entertainment',
+            '25': 'News & Politics',
+            '26': 'Howto & Style',
+            '27': 'Education',
+            '28': 'Science & Technology',
+            '29': 'Nonprofits & Activism',
+            '30': 'Movies',
+            '31': 'Anime/Animation',
+            '32': 'Action/Adventure',
+            '33': 'Classics',
+            '34': 'Comedy',
+            '35': 'Documentary',
+            '36': 'Drama',
+            '37': 'Family',
+            '38': 'Foreign',
+            '39': 'Horror',
+            '40': 'Sci-Fi/Fantasy',
+            '41': 'Thriller',
+            '42': 'Shorts',
+            '43': 'Shows',
+            '44': 'Trailers',
+        }
         if isinstance(category_id, list):
             return [categories.get(cid, 'Unknown') for cid in category_id]
         else:
             return categories.get(category_id, 'Unknown')
 
+
 # Define a class to analyze YouTube video statistics
 class YTStatsAnalyzer:
+    """
+    Initialize the YTStatsAnalyzer.
+
+    Args:
+        api_key (str): Your YouTube Data API key.
+        results (int): Maximum number of results to retrieve.
+    """
     def __init__(self, api_key, results):
+
         self.request_processor = YTRequestProcessor(api_key, results)
         self.data_transformer = DataTransformer()
 
     # Analyze video statistics and return a DataFrame
     def analyze_statistics(self):
+        """
+        Analyze video statistics and return a DataFrame containing extracted data.
+
+        Returns:
+            pandas.DataFrame: DataFrame containing analyzed video statistics.
+        """
         video_data = self.request_processor.get_video_data()
 
         # Initialize lists to store extracted data

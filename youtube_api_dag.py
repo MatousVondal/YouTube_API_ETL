@@ -1,6 +1,5 @@
 from airflow import DAG
 from datetime import timedelta, datetime
-from airflow.providers.http.sensors.http import HttpSensor
 from airflow.operators.python import PythonOperator
 from youtube_statistics import YTStatsAnalyzer
 from google.cloud import bigquery
@@ -10,7 +9,12 @@ import logging
 from airflow.utils.email import send_email
 
 def extract_and_transform():
+    """
+    Extract and transform YouTube video statistics using the YTStatsAnalyzer.
 
+    Returns:
+        pandas.DataFrame: DataFrame containing analyzed YouTube video statistics.
+    """
     # YouTube API key and number of results to fetch
     api_key = "YOUR_YOUTUBE_API_KEY"
     results = 50
@@ -104,9 +108,6 @@ def export_to_bigquery(**kwargs):
     # Load the DataFrame into the specified BigQuery table
     job = client.load_table_from_dataframe(data, table_id, job_config=job_config)
     job.result()
-    
-    # Retrieve information about the loaded table
-    loaded_data = client.get_table(table_id)
 
 def send_email_on_failure(context):
     task_instance = context['task_instance']
