@@ -44,7 +44,23 @@ def validate_data(**kwargs):
             "video_id": str,
             "video_title": str,
             "channel_id": str,
-            # ... (continue for other columns)
+            "channel_title": str,
+            "date_of_published": pd.Timestamp,
+            "most_frequent_word": str,
+            "category": str,
+            "view_count": int,
+            "like_count": int,
+            "view_count_ratio": float,
+            "like_count_ratio": float,
+            "comment_count": int,
+            "duration_sec": int,
+            "categorize_duration": str,
+            "channel_view_count": int,
+            "channel_sub_count": int,
+            "channel_video_count": int,
+            "watch_video": str,
+            "picture": str,
+            "language": str
         }
         
         # Validate data types of each column
