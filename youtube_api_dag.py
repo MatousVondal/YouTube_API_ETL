@@ -171,3 +171,4 @@ with DAG('youtube_api_dag',
 
     # Define task dependencies
     extract_and_transform_task >> data_validation_task >> export_to_bigquery_task
+            
